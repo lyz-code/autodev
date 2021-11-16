@@ -1,0 +1,25 @@
+{
+  "template": "https://github.com/lyz-code/cookiecutter-python-project",
+  "commit": "7077aa7dc32e0bacc43780813ea5bfd59b2450b3",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "Autodev",
+      "project_slug": "autodev",
+      "project_description": "Command line tool to automate development operations",
+      "requirements": "",
+      "configure_command_line": "True",
+      "read_configuration_from_yaml": "True",
+      "github_user": "lyz-code",
+      "github_token_pass_path": "internet/github.lyz-code.api_token",
+      "pypi_token_pass_path": "internet/pypi.token",
+      "test_pypi_token_pass_path": "internet/test.pypi.token",
+      "author": "Lyz",
+      "author_email": "lyz-code-security-advisories@riseup.net",
+      "security_advisories_email": "lyz-code-security-advisories@riseup.net",
+      "project_underscore_slug": "autodev",
+      "_template": "https://github.com/lyz-code/cookiecutter-python-project"
+    }
+  },
+  "directory": null
+}

@@ -1,8 +1,9 @@
 """Store the classes and fixtures used throughout the tests."""
-from _pytest.tmpdir import TempdirFactory
-import pytest
 
 from shutil import copyfile
+
+import pytest
+from _pytest.tmpdir import TempdirFactory
 
 from autodev.config import Config
 

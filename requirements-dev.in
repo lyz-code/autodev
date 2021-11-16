@@ -6,6 +6,9 @@ pytest
 pytest-cov
 pytest-pythonpath
 pytest-xdist
+pytest-freezegun
+factory_boy
+faker_enum
 
 # Linting
 yamllint
