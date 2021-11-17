@@ -30,6 +30,7 @@ class GitRepositoryState(str, Enum):
     HEALTHY = "healthy"
     BROKEN = "broken"
     DELETED = "deleted"
+    ILL = "ill"
 
 
 class GitRepository(Entity):
@@ -66,11 +67,14 @@ class GitRepository(Entity):
 
         If one of the workflows is marked as failure, the state is set as broken.
         """
+        state = GitRepositoryState.HEALTHY
         for workflow in workflows:
             if workflow.state == WorkflowState.FAILURE:
-                self.set_state(GitRepositoryState.BROKEN)
-                return
-        self.set_state(GitRepositoryState.HEALTHY)
+                state = GitRepositoryState.BROKEN
+                break
+            elif workflow.state == WorkflowState.ILL:
+                state = GitRepositoryState.ILL
+        self.set_state(state)
 
 
 class WorkflowEvent(str, Enum):
@@ -87,6 +91,7 @@ class WorkflowState(str, Enum):
     IN_PROGRESS = "in progress"
     SUCCESS = "success"
     FAILURE = "failure"
+    ILL = "ill"
 
 
 class Workflow(Entity):
@@ -96,7 +101,7 @@ class Workflow(Entity):
     repo_id: int
     name: str
     state: WorkflowState = WorkflowState.UNKNOWN
-    updated_at: Optional[datetime] = None
+    updated_at: datetime = datetime.now()
     branch: str = "master"
     scheduled_tolerance: int = 7
 
@@ -115,10 +120,27 @@ class Workflow(Entity):
         The workflow will be marked as failure if:
 
         * In push workflows, if the latest run is in failure state.
+        * In schedule workflows, if the latest run is in failure state and the workflow
+            has been in that state for the scheduled_tolerance number of days.
+
+        The workflow will be marked as success if the last run is successful.
+
+        The workflow will be marked as ill if a scheduled workflow is in failure state
+        and it has been in that state a smaller number of days than scheduled_tolerance.
         """
         for run in sorted(workflow_runs, reverse=True):
-            if run.event == WorkflowEvent.PUSH and run.branch == self.branch:
+            if run.branch != self.branch:
+                continue
+            if run.event == WorkflowEvent.PUSH or run.state == WorkflowState.SUCCESS:
                 self.set_state(run.state)
+                return
+            if self.state == WorkflowState.SUCCESS:
+                self.set_state(WorkflowState.ILL)
+                return
+
+            last_state_change = (datetime.now() - self.updated_at).days
+            if last_state_change > self.scheduled_tolerance:
+                self.set_state(WorkflowState.FAILURE)
                 return
 
 
