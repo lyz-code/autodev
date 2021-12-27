@@ -8,7 +8,7 @@ click==8.0.3
     # via autodev (setup.py)
 importlib-metadata==4.8.2
     # via click
-ruamel.yaml==0.17.17
+ruamel.yaml==0.17.19
     # via autodev (setup.py)
 ruamel.yaml.clib==0.2.6
     # via ruamel.yaml
