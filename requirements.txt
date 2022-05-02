@@ -4,7 +4,7 @@
 #
 #    pip-compile --allow-unsafe
 #
-click==8.0.3
+click==8.1.3
     # via autodev (setup.py)
 importlib-metadata==4.8.2
     # via click
