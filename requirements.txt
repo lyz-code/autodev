@@ -14,5 +14,5 @@ ruamel.yaml.clib==0.2.6
     # via ruamel.yaml
 typing-extensions==4.0.0
     # via importlib-metadata
-zipp==3.6.0
+zipp==3.14.0
     # via importlib-metadata
