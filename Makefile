@@ -1,12 +1,10 @@
 .DEFAULT_GOAL := test
-isort = isort src docs/examples tests setup.py
-black = black --target-version py37 src docs/examples tests setup.py
+isort = isort src docs/examples tests
+black = black --target-version py37 src docs/examples tests
 
 .PHONY: install
 install:
-	python -m pip install -U setuptools pip pip-tools
-	python -m piptools sync requirements.txt requirements-dev.txt docs/requirements.txt
-	pip install -e .
+	pdm install
 	pre-commit install
 
 .PHONY: update
@@ -15,29 +13,17 @@ update:
 	@echo "- Updating dependencies -"
 	@echo "-------------------------"
 
-  # Sync your virtualenv with the expected state
-	python -m piptools sync requirements.txt requirements-dev.txt docs/requirements.txt
-
-	pip install -U pip
-
-	rm requirements.txt
-	touch requirements.txt
-	pip-compile -Ur --allow-unsafe
-
-	rm docs/requirements.txt
-	touch docs/requirements.txt
-	pip-compile -Ur --allow-unsafe docs/requirements.in --output-file docs/requirements.txt
-
-	rm requirements-dev.txt
-	touch requirements-dev.txt
-	pip-compile -Ur --allow-unsafe requirements-dev.in --output-file requirements-dev.txt
-
-  # Sync your virtualenv with the new state
-	python -m piptools sync requirements.txt requirements-dev.txt docs/requirements.txt
-
-	pip install -e .
+	poetry update
 
 	@echo ""
+
+.PHONY: upgrade
+upgrade:
+	@echo "-------------------------"
+	@echo "- Upgrading dependencies -"
+	@echo "-------------------------"
+
+	poetryup
 
 .PHONY: format
 format:
@@ -56,7 +42,7 @@ lint:
 	@echo "- Testing the lint -"
 	@echo "--------------------"
 
-	flakehell lint src/ tests/ setup.py
+	flakehell lint src/ tests/
 	$(isort) --check-only --df
 	$(black) --check --diff
 
@@ -119,7 +105,6 @@ clean:
 	rm -rf build
 	rm -rf dist
 	rm -f src/*.c pydantic/*.so
-	python setup.py clean
 	rm -rf site
 	rm -rf docs/_build
 	rm -rf docs/.changelog.md docs/.version.md docs/.tmp_schema_mappings.html
@@ -158,8 +143,7 @@ build-package: clean
 	@echo "- Building the package -"
 	@echo "------------------------"
 
-	python setup.py -q bdist_wheel
-	python setup.py -q sdist
+	poetry build
 
 	@echo ""
 
@@ -179,7 +163,7 @@ upload-pypi:
 	@echo "- Uploading package to pypi -"
 	@echo "-----------------------------"
 
-	twine upload -r pypi dist/*
+	poetry publish
 
 	@echo ""
 
@@ -189,7 +173,7 @@ upload-testing-pypi:
 	@echo "- Uploading package to pypi testing -"
 	@echo "-------------------------------------"
 
-	twine upload -r testpypi dist/*
+	poetry publish -r test-pypi
 
 	@echo ""
 

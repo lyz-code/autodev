@@ -1,87 +1,29 @@
 """Define the factories of the program models."""
 
-import factory
-from faker_enum import EnumProvider
+from pydantic_factories import ModelFactory
 
-from autodev.model import (
-    GitRepository,
-    GitRepositoryState,
-    GitServerType,
-    Provider,
-    Workflow,
-    WorkflowEvent,
-    WorkflowRun,
-    WorkflowState,
-)
-
-factory.Faker.add_provider(EnumProvider)
+from autodev.model import GitRepository, Provider, Workflow, WorkflowRun
 
 
-class GitRepositoryFactory(factory.Factory):  # type: ignore
+class GitRepositoryFactory(ModelFactory):  # type: ignore
     """Generate a fake factory."""
 
-    id_ = factory.Faker("pyint")
-    name = factory.Faker("word")
-    description = factory.Faker("sentence")
-    stars = factory.Faker("pyint")
-    forks = factory.Faker("pyint")
-    source_id = factory.Faker("pyint")
-    created_at = factory.Faker("date_time")
-    state = factory.Faker("enum", enum_cls=GitRepositoryState)
-    language = factory.Faker("word")
-    clone_url = factory.Faker("url")
-    provider_id = factory.Faker("pyint")
-    scheduled_tolerance = factory.Faker("pyint")
-
-    class Meta:
-        """Declare the model of the factory."""
-
-        model = GitRepository
+    __model__ = GitRepository
 
 
-class WorkflowFactory(factory.Factory):  # type: ignore
+class WorkflowFactory(ModelFactory):  # type: ignore
     """Generate a fake factory."""
 
-    id_ = factory.Faker("pyint")
-    source_id = factory.Faker("pyint")
-    repo_id = factory.Faker("pyint")
-    name = factory.Faker("word")
-    state = factory.Faker("enum", enum_cls=WorkflowState)
-    branch = factory.Faker("word")
-
-    class Meta:
-        """Declare the model of the factory."""
-
-        model = Workflow
+    __model__ = Workflow
 
 
-class WorkflowRunFactory(factory.Factory):  # type: ignore
+class WorkflowRunFactory(ModelFactory):  # type: ignore
     """Generate a fake factory."""
 
-    id_ = factory.Faker("pyint")
-    workflow_id = factory.Faker("pyint")
-    source_id = factory.Faker("pyint")
-    state = factory.Faker("enum", enum_cls=WorkflowState)
-    branch = factory.Faker("word")
-    created_at = factory.Faker("date_time")
-    updated_at = factory.Faker("date_time")
-    event = factory.Faker("enum", enum_cls=WorkflowEvent)
-    url = factory.Faker("url")
-
-    class Meta:
-        """Declare the model of the factory."""
-
-        model = WorkflowRun
+    __model__ = WorkflowRun
 
 
-class ProviderFactory(factory.Factory):  # type: ignore
+class ProviderFactory(ModelFactory):  # type: ignore
     """Generate a fake provider."""
 
-    id_ = factory.Faker("pyint")
-    name = factory.Faker("word")
-    git_server = factory.Faker("enum", enum_cls=GitServerType)
-
-    class Meta:
-        """Declare the model of the factory."""
-
-        model = Provider
+    __model__ = Provider
